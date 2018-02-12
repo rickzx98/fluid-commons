@@ -15,9 +15,9 @@
   },
   "author": "Jerico de Guzman <rickzx98@gmail.com>",
   "bugs": {
-    "url": "https://github.com/DimitriMikadze/create-react-library/issues"
+    "url": "https://github.com/rickzx98/fluid-commons/issues"
   },
-  "homepage": "https://github.com/DimitriMikadze/create-react-library#readme",
+  "homepage": "https://github.com/rickzx98/fluid-commons/#readme",
   "license": "MIT",
   "dependencies": {
     "fluid-func": "^0.2.3"
