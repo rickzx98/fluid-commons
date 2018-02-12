@@ -1,8 +1,3 @@
-import Example from './components/Example';
-import SecondExample from './components/SecondExample';
-
-export default Example;
-
-export {
-  SecondExample,
-};
+export { FluidTable, FluidTableActions } from './components/fluid-table/';
+export { FluidPaginate } from './components/fluid-paginate/';
+export { FluidForm } from './components/fluid-form/';
