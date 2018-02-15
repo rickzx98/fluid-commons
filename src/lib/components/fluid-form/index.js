@@ -73,3 +73,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 export const FluidForm = connect(mapStateToProps, mapDispatchToProps)(FluidFormTag);
+export const Actions = actions;
