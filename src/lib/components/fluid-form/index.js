@@ -72,4 +72,4 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(actions, dispatch)
   };
 }
-export const FluidForm = connect(mapStateToPropsundefined, mapDispatchToProps)(FluidFormTag);
+export const FluidForm = connect(mapStateToProps, mapDispatchToProps)(FluidFormTag);
