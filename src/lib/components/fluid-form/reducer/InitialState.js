@@ -4,5 +4,6 @@ export default {
     invalid: false,
     field: undefined,
     message: undefined,
-    form: undefined
+    form: undefined,
+    data: {}
 };

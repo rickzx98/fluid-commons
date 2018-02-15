@@ -15,7 +15,6 @@ class FluidFormTag extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.state = {};
     this.thisOnChange = this.onChange.bind(this);
     this.thisSubmitForm = this.submitForm.bind(this);
     const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
@@ -38,13 +37,10 @@ class FluidFormTag extends React.Component {
     if (event) {
       event.preventDefault();
     }
-    FluidFunc.start(`${FORM_SUBMIT}${this.props.name}`, this.state)
+    FluidFunc.start(`${FORM_SUBMIT}${this.props.name}`, this.props.fluidForm[this.props.name].data)
       .catch(this.props.onFailed);
   }
   onChange(event) {
-    const state = { ...this.state };
-    state[event.target.name] = event.target.value;
-    this.setState(state);
     this.props.actions.setFormValue(this.props.name, event.target.name, event.target.value);
   }
   render() {
@@ -64,9 +60,14 @@ FluidFormTag.propTypes = {
   ]),
   specs: PropTypes.array.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  onFailed: PropTypes.func.isRequired
+  onFailed: PropTypes.func.isRequired,
+  fluidForm: PropTypes.object.isRequired
 };
-function mapStateToProps() { }
+function mapStateToProps(state) {
+  return {
+    fluidForm: state.fluidForm
+  };
+}
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(actions, dispatch)
