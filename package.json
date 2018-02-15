@@ -1,6 +1,6 @@
 {
   "name": "fluid-commons",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Commonly used react components with Fluid-Func support.",
   "main": "build/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DimitriMikadze/create-react-library.git"
+    "url": "git+https://github.com/rickzx98/fluid-commons.git"
   },
   "author": "Jerico de Guzman <rickzx98@gmail.com>",
   "bugs": {
@@ -20,7 +20,9 @@
   "homepage": "https://github.com/rickzx98/fluid-commons/#readme",
   "license": "MIT",
   "dependencies": {
-    "fluid-func": "^0.2.3"
+    "fluid-func": "^0.2.3",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
   },
   "devDependencies": {
     "autoprefixer": "7.1.6",

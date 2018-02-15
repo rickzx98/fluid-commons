@@ -1,4 +1,4 @@
-import { FluidTable } from '../lib';
+import { FluidForm } from '../lib';
 import React from 'react';
 
 const App = () => (

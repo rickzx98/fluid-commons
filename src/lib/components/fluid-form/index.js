@@ -1,10 +1,15 @@
+import * as actions from './actions/FluidFormActions';
+
 import { FORM_ON_SUBMIT, FORM_SUBMIT } from './fluid.info';
 
 import FluidFunc from 'fluid-func';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import initalState from './reducer/InitialState';
 
-export class FluidForm extends React.Component {
+class FluidFormTag extends React.Component {
   static submit(tableName) {
     return FluidFunc.start(`${FORM_ON_SUBMIT}${tableName}`);
   }
@@ -26,6 +31,9 @@ export class FluidForm extends React.Component {
         this.thisSubmitForm();
       });
   }
+  componentWillMount() {
+    this.props.actions.resetForm(this.props.name, initalState);
+  }
   submitForm(event) {
     if (event) {
       event.preventDefault();
@@ -37,6 +45,7 @@ export class FluidForm extends React.Component {
     const state = { ...this.state };
     state[event.target.name] = event.target.value;
     this.setState(state);
+    this.props.actions.setFormValue(this.props.name, event.target.name, event.target.value);
   }
   render() {
     return (<form
@@ -47,7 +56,7 @@ export class FluidForm extends React.Component {
   }
 }
 
-FluidForm.propTypes = {
+FluidFormTag.propTypes = {
   name: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.element,
@@ -57,3 +66,10 @@ FluidForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onFailed: PropTypes.func.isRequired
 };
+function mapStateToProps() { }
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+}
+export const FluidForm = connect(mapStateToPropsundefined, mapDispatchToProps)(FluidFormTag);
