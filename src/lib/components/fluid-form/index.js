@@ -38,7 +38,8 @@ class FluidFormTag extends React.Component {
     if (event) {
       event.preventDefault();
     }
-    FluidFunc.start(`${FORM_SUBMIT}${this.props.name}`, this.props.fluidForm[this.props.name].data)
+    const form = this.props.fluidForm[this.props.name];
+    FluidFunc.start(`${FORM_SUBMIT}${this.props.name}`, form ? form.data : {})
       .catch(this.props.onFailed);
   }
   onChange(event) {

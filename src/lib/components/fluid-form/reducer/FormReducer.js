@@ -5,7 +5,7 @@ export default function FormReducer(state = {}, action) {
         case FORM_RESET: {
             const { form, payload } = action.payload;
             const newState = { ...state };
-            newState[form] = payload;
+            newState[form] = { ...payload, data: {} };
             return newState;
         }
         case FORM_INVALID: {
@@ -18,10 +18,13 @@ export default function FormReducer(state = {}, action) {
         case FORM_SET_FORM_VALUE: {
             const { form, field, value } = action.payload;
             const newState = { ...state };
-            const formState = { ...newState[form] };
-            formState[field] = value;
+            const formState = { ...newState[form], data: { ...newState[form].data } };
+            formState.data[field] = value;
             newState[form] = formState;
             return newState;
+        }
+        default: {
+            return state;
         }
     }
 }
