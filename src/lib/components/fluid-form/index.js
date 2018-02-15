@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import fluidFormReducer from './reducer/FormReducer';
 import initalState from './reducer/InitialState';
 
 class FluidFormTag extends React.Component {
@@ -75,3 +76,4 @@ function mapDispatchToProps(dispatch) {
 }
 export const FluidForm = connect(mapStateToProps, mapDispatchToProps)(FluidFormTag);
 export const Actions = actions;
+export const FluidFormReducer = fluidFormReducer;
