@@ -1,6 +1,6 @@
 {
   "name": "fluid-commons",
-  "version": "0.2.11",
+  "version": "0.3.1",
   "description": "Commonly used react components with Fluid-Func support.",
   "main": "build/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/rickzx98/fluid-commons/#readme",
   "license": "MIT",
   "devDependencies": {
-    "fluid-func": "^0.2.4",
+    "fluid-func": "^0.2.3",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "autoprefixer": "7.1.6",

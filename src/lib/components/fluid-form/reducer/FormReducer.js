@@ -1,30 +1,43 @@
-import { FORM_INVALID, FORM_RESET, FORM_SET_FORM_VALUE } from '../actions/';
+import { FORM_INVALID, FORM_RESET, FORM_SET_FORM_VALUE, FORM_SUBMITTED } from '../actions/';
+
+import FluidFunc from 'fluid-func';
 
 export default function FormReducer(state = {}, action) {
-    switch (action.type) {
-        case FORM_RESET: {
-            const { form, payload } = action.payload;
-            const newState = { ...state };
-            newState[form] = { ...payload, data: {} };
-            return newState;
-        }
-        case FORM_INVALID: {
-            const { form, field, message } = action.payload;
-            const newState = { ...state };
-            const formState = { ...newState[form], field, message };
-            newState[form] = formState;
-            return newState;
-        }
-        case FORM_SET_FORM_VALUE: {
-            const { form, field, value } = action.payload;
-            const newState = { ...state };
-            const formState = { ...newState[form], data: { ...newState[form].data } };
-            formState.data[field] = value;
-            newState[form] = formState;
-            return newState;
-        }
-        default: {
-            return state;
-        }
+  switch (action.type) {
+    case FORM_SUBMITTED: {
+      const { form } = action.payload;
+      const newState = { ...state };
+      const formState = { ...newState[form], data: { ...newState[form].data }, touched: false, invalid: false };
+      newState[form] = formState;
+      return newState;
     }
+    case FORM_RESET: {
+      const { form, payload } = action.payload;
+      const newState = { ...state };
+      newState[form] = { ...payload, data: {} };
+      return newState;
+    }
+    case FORM_INVALID: {
+      const { form, field, message } = action.payload;
+      const newState = { ...state };
+      const formState = { ...newState[form], field, message, invalid: true };
+      newState[form] = formState;
+      return newState;
+    }
+    case FORM_SET_FORM_VALUE: {
+      const { form, field, value } = action.payload;
+
+      if (FluidFunc.exists(`${form}.${field}`)) {
+        FluidFunc.start(`${form}.${field}`, { value });
+      }
+      const newState = { ...state };
+      const formState = { ...newState[form], data: { ...newState[form].data }, touched: true };
+      formState.data[field] = value;
+      newState[form] = formState;
+      return newState;
+    }
+    default: {
+      return state;
+    }
+  }
 }
