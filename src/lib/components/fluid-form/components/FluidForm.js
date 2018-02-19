@@ -52,7 +52,7 @@ export class FluidFormTag extends React.Component {
       });
     LoadChain
       .onStart(parameter => {
-        this.thisLoadForm(data());
+        this.thisLoadForm(parameter);
       })
       .onFail((error, retry, reject) => {
         this.props.onFailed({ error });
