@@ -1,4 +1,5 @@
 import * as types from './';
+
 export const submitForm = (form) => {
   return {
     type: types.FORM_SUBMITTED,
@@ -35,3 +36,12 @@ export const invalidForm = (form, field, message) => {
     }
   };
 };
+
+export const loadForm = (form, data)=>{
+  return {
+    type: types.FORM_LOAD_DATA,
+    payload: {
+      form, data
+    }
+  };
+}

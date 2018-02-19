@@ -1,6 +1,6 @@
 export default {
     touch: false,
-    update: false,
+    managed: false,
     invalid: false,
     field: undefined,
     message: undefined,

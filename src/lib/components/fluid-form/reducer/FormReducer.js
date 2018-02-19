@@ -1,9 +1,16 @@
-import { FORM_INVALID, FORM_RESET, FORM_SET_FORM_VALUE, FORM_SUBMITTED } from '../actions/';
+import { FORM_INVALID, FORM_LOAD_DATA, FORM_RESET, FORM_SET_FORM_VALUE, FORM_SUBMITTED } from '../actions/';
 
 import FluidFunc from 'fluid-func';
 
 export default function FormReducer(state = {}, action) {
   switch (action.type) {
+    case FORM_LOAD_DATA: {
+      const { form, data } = action.payload;
+      const newState = { ...state };
+      const formState = { ...newState[form], data: { ...data }, managed: true };
+      newState[form] = formState;
+      return newState;
+    }
     case FORM_SUBMITTED: {
       const { form } = action.payload;
       const newState = { ...state };

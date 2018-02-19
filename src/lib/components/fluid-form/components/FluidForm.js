@@ -1,4 +1,4 @@
-import { FORM_ON_SUBMIT, FORM_SET_FIELD, FORM_SUBMIT } from '../fluid.info';
+import { FORM_LOAD_DATA, FORM_ON_SUBMIT, FORM_SET_FIELD, FORM_SUBMIT } from '../fluid.info';
 import { mapDispatchToProps, mapStateToProps, types } from './FluidFormConfig';
 
 import FluidFunc from 'fluid-func';
@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 import initalState from '../reducer/InitialState';
 
 export class FluidFormTag extends React.Component {
-
+  static load(tableName, data) {
+    return FluidFunc.start(`${FORM_LOAD_DATA}${tableName}`, { ...data });
+  }
   static submit(tableName) {
     return FluidFunc.start(`${FORM_ON_SUBMIT}${tableName}`);
   }
@@ -28,7 +30,9 @@ export class FluidFormTag extends React.Component {
     super(props);
     this.thisOnChange = this.onChange.bind(this);
     this.thisSubmitForm = this.submitForm.bind(this);
+    this.thisLoadForm = this.loadForm.bind(this);
     const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
+    const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
     props.specs.forEach(spec => {
       if (spec.public) {
         FluidFunc.create(`${FORM_SET_FIELD}${props.name}`)
@@ -38,6 +42,7 @@ export class FluidFormTag extends React.Component {
           })
           .spec('field', { require: true });
       }
+      LoadChain.spec(spec.field, spec.data);
       SubmitChain.spec(spec.field, spec.data);
     });
     SubmitChain
@@ -45,10 +50,19 @@ export class FluidFormTag extends React.Component {
         props.onSubmit(getDataFromParam(props.specs, parameter));
         this.props.actions.submitForm(props.name);
       });
+    LoadChain
+      .onStart(parameter => {
+        this.thisLoadForm(data());
+      })
+      .onFail((error, retry, reject) => {
+        this.props.onFailed({ error });
+        reject();
+      });
     FluidFunc.create(`${FORM_ON_SUBMIT}${props.name}`)
       .onStart(() => {
         this.thisSubmitForm();
       });
+
   }
   componentWillMount() {
     this.props.actions.resetForm(this.props.name, initalState);
@@ -63,6 +77,9 @@ export class FluidFormTag extends React.Component {
   }
   onChange(event) {
     this.props.actions.setFormValue(this.props.name, event.target.name, event.target.value);
+  }
+  loadForm(parameter) {
+    this.props.actions.loadForm(this.props.name, getDataFromParam(this.props.specs, parameter));
   }
   render() {
     return (<form
