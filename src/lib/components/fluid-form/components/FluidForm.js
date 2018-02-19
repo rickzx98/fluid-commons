@@ -42,7 +42,7 @@ export class FluidFormTag extends React.Component {
     });
     SubmitChain
       .onStart(parameter => {
-        props.onSubmit(parameter);
+        props.onSubmit(getDataFromParam(props.specs, parameter));
         this.props.actions.submitForm(props.name);
       });
     FluidFunc.create(`${FORM_ON_SUBMIT}${props.name}`)
@@ -75,5 +75,16 @@ export class FluidFormTag extends React.Component {
 
 FluidFormTag.propTypes = types;
 
+function getDataFromParam(specs, param) {
+  let data = {};
+  if (specs) {
+    specs.forEach(spec => {
+      if (param[spec.field]) {
+        data[spec.field] = param[spec.field]();
+      }
+    });
+  }
+  return data;
+}
 
 export const FluidForm = connect(mapStateToProps, mapDispatchToProps)(FluidFormTag);
