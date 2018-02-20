@@ -1,4 +1,4 @@
-import { FORM_LOAD_DATA, FORM_ON_SUBMIT, FORM_SET_FIELD, FORM_SUBMIT } from '../fluid.info';
+import { FORM_CLEAR, FORM_LOAD_DATA, FORM_ON_SUBMIT, FORM_SET_FIELD, FORM_SUBMIT } from '../fluid.info';
 import { mapDispatchToProps, mapStateToProps, types } from './FluidFormConfig';
 
 import FluidFunc from 'fluid-func';
@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 import initalState from '../reducer/InitialState';
 
 export class FluidFormTag extends React.Component {
+  static clear(tableName) {
+    return FluidFunc.start(`${FORM_CLEAR}${tableName}`);
+  }
   static load(tableName, data) {
     return FluidFunc.start(`${FORM_LOAD_DATA}${tableName}`, { ...data });
   }
@@ -62,7 +65,10 @@ export class FluidFormTag extends React.Component {
       .onStart(() => {
         this.thisSubmitForm();
       });
-
+    FluidFunc.create(`${FORM_CLEAR}${props.name}`)
+      .onStart(() => {
+        this.props.actions.resetForm(props.name, initalState);
+      });
   }
   componentWillMount() {
     this.props.actions.resetForm(this.props.name, initalState);
