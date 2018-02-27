@@ -51,11 +51,11 @@ export class TableBody extends React.Component {
     let value = nextProps.value;
     if (!(value instanceof Function)) {
       if (this.state.value !== value) {
-        this.setTableValue(nextProps);
+        this.setTableValue(value);
       } else if ((this.state.value && value instanceof Array && !!value) && this.state.value.length !== value.length) {
-        this.setTableValue(nextProps);
+        this.setTableValue(value);
       } else if (value instanceof Promise) {
-        this.setTableValue(nextProps);
+        this.setTableValue(value);
       }
     }
   }
