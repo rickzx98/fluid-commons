@@ -26,6 +26,6 @@ export default class App extends React.Component {
     }, 800);
   }
   render() {
-    return (<FluidTable name="sampleTable" columns={this.columns} value={this.state.value} />);
+    return (<FluidTable onSelect={(value) => { console.log('selected', value); }} name="sampleTable" columns={this.columns} value={this.state.value} />);
   }
 }

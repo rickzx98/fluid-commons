@@ -3,10 +3,10 @@ import React from 'react';
 import { TableColumn } from './TableColumn';
 import { TableEditableColumn } from './TableEditableColumn';
 
-export const TableRow = ({ columns, value, index, columnClass, rowClass, tableName, editable, column, editableIndex }) => {
+export const TableRow = ({ columns, value, index, columnClass, rowClass, tableName, editable, column, editableIndex, onSelect }) => {
   const scheme = index % 2 === 0 ? 'even' : 'odd';
   const className = `${scheme} ${rowClass || ''}`;
-  return (<tr className={className}>{columns && columns.map(col => {
+  return (<tr onClick={() => { if (onSelect) { onSelect(value); } }} className={className}>{columns && columns.map(col => {
     return (editable && index === editableIndex && col.field === column) || value.isNew ?
       <TableEditableColumn tableName={tableName}
         columnClass={columnClass} key={col.field}
@@ -19,6 +19,7 @@ export const TableRow = ({ columns, value, index, columnClass, rowClass, tableNa
 };
 
 TableRow.propTypes = {
+  onSelect: PropTypes.func,
   column: PropTypes.string,
   editable: PropTypes.bool,
   columns: PropTypes.array.isRequired,

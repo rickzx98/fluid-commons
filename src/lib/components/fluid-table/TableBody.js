@@ -136,6 +136,7 @@ export class TableBody extends React.Component {
     return (<tbody>
       {this.state.value && this.state.value.map && this.state.value.map((row, index) =>
         (<TableRow
+          onSelect={this.props.onSelect}
           editableIndex={this.state.editableIndex}
           editable={this.state.editable}
           column={this.state.column}
@@ -158,5 +159,6 @@ TableBody.propTypes = {
   columns: PropTypes.array,
   fieldKey: PropTypes.string,
   name: PropTypes.string.isRequired,
-  rowClass: PropTypes.string
+  rowClass: PropTypes.string,
+  onSelect: PropTypes.func,
 };
