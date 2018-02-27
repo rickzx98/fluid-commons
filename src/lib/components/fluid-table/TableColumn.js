@@ -6,27 +6,28 @@ import React from 'react';
 
 export const TableColumn = ({ column, value, columnClass, tableName, index }) => {
   let colElem = <td />;
+  let realValue = column.transform ? column.transform(value[column.field]) : value[column.field];
   const className = `${column.className || ''} ${columnClass || ''}`;
   if (column.component) {
-    colElem = <td style={column.style} className={className}>{colElem.component({ value, column })}</td>;
+    colElem = <td style={column.style} className={className}>{colElem.component({ realValue, column })}</td>;
   } else {
     colElem = (<td onDoubleClick={() => {
       if (column.editable) {
         if (FluidFunc.exists(`${TABLE_EDIT_MODE}${tableName}`)) {
           FluidFunc.start([`${TABLE_EDIT}${tableName}`, `${TABLE_EDIT_MODE}${tableName}`], {
-            row: value,
+            row: realValue,
             field: column.field,
             index: index
           });
         } else {
           FluidFunc.start(`${TABLE_EDIT}${tableName}`, {
-            row: value,
+            row: realValue,
             field: column.field,
             index: index
           });
         }
       }
-    }} style={column.style} className={className}>{value[column.field]}</td>);
+    }} style={column.style} className={className}>{realValue}</td>);
   }
   return colElem;
 };
