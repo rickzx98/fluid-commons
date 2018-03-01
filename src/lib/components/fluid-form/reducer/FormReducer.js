@@ -7,7 +7,7 @@ export default function FormReducer(state = {}, action) {
     case FORM_LOAD_DATA: {
       const { form, data } = action.payload;
       const newState = { ...state };
-      const formState = { ...newState[form], data: { ...data }, managed: true };
+      const formState = { ...newState[form], data: { ...data }, invalid: false, touched: false, managed: true };
       newState[form] = formState;
       return newState;
     }
