@@ -28,7 +28,7 @@ export class FluidApi extends React.Component {
   onCreate() {
     const config = this.props.config;
     if (config && config.environment) {
-      this.defaultParam = config.environment[this.props.environment];
+      this.defaultParam = config.environment[this.props.environment] instanceof Function ? config.environment[this.props.environment]() : config.environment[this.props.environment];
     }
     for (let apiName in this.props.api) {
       if (this.props.api.hasOwnProperty(apiName)) {

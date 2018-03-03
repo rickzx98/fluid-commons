@@ -1,7 +1,8 @@
 export default {
   environment: {
-    dev: {
-      mockData: require('./MockData')
+    dev: () => {
+      const mockData = require('./MockData');
+      return { mockData };
     },
     prod: {
       sampleParam: 'hello'

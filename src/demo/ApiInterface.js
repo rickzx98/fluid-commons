@@ -1,7 +1,7 @@
 export default {
   addPeople: {
     dev: (param) => {
-      console.log('dev-param', param);
+      console.log('dev-param', param.mockData());
       return new Promise(resolve => {
         setTimeout(() => {
           resolve();
@@ -9,7 +9,7 @@ export default {
       });
     },
     prod: (param) => {
-      console.log('prod-param', param);
+      console.log('prod-param', param.sampleParam());
     }
   }
 };
