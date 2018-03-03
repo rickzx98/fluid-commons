@@ -16,6 +16,9 @@ export class FluidTable extends React.Component {
   static cancelEdit(tableName) {
     return FluidFunc.start(`${actions.TABLE_CANCEL_EDIT}${tableName}`);
   }
+  static clearFilter(tableName){
+    return FluidFunc.start(`${actions.TABLE_CLEAR_FILTER}${tableName}`);
+  }
   constructor(props) {
     super(props);
     this.state = {};

@@ -1,28 +1,42 @@
-import { TABLE_ADD_ROW, TABLE_CANCEL_EDIT, TABLE_EDIT, TABLE_REFRESH, TABLE_SET_NEW_VALUE, TABLE_SUBMIT_NEW_VALUE } from './fluid.info';
+import {
+   TABLE_ADD_ROW,
+   TABLE_CANCEL_EDIT,
+   TABLE_CLEAR_FILTER,
+   TABLE_EDIT,
+   TABLE_REFRESH,
+   TABLE_SELECT_FILTER,
+   TABLE_SET_NEW_VALUE,
+   TABLE_SUBMIT_NEW_VALUE
+} from './fluid.info';
 
 import FluidFunc from 'fluid-func';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { TableFilters } from './TableFilters';
 import { TableRow } from './TableRow';
 
 export class TableBody extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: [], editable: false, column: '', editableIndex: 0, newRow: {} };
+    this.state = { filter: {}, value: [], editable: false, column: '', editableIndex: 0, newRow: {} };
     this.thisRefresh = this.refresh.bind(this);
     this.thisSetEditable = this.setEditable.bind(this);
     this.thisCancelEditable = this.cancelEditable.bind(this);
     this.thisAddRow = this.addRow.bind(this);
     this.thisSetNewRowValue = this.setNewRowValue.bind(this);
     this.thisSubmitNewRowValue = this.submitNewRowValue.bind(this);
+    this.thisOnFilter = this.onFilter.bind(this);
+    this.thisFilter = this.filter.bind(this);
+    this.thisClearFilter = this.clearFilter.bind(this);
+
     FluidFunc
-      .create(`${TABLE_REFRESH}${this.props.name}`)
+      .create(`${TABLE_REFRESH}${props.name}`)
       .onStart(() => {
         this.thisCancelEditable();
         this.thisRefresh();
       });
     FluidFunc
-      .create(`${TABLE_EDIT}${this.props.name}`)
+      .create(`${TABLE_EDIT}${props.name}`)
       .onStart(parameter => {
         const field = parameter.field();
         const index = parameter.index();
@@ -31,20 +45,26 @@ export class TableBody extends React.Component {
       .spec('field', { require: true })
       .spec('index', { require: true });
     FluidFunc
-      .create(`${TABLE_CANCEL_EDIT}${this.props.name}`)
+      .create(`${TABLE_CANCEL_EDIT}${props.name}`)
       .onStart(this.thisCancelEditable);
-    FluidFunc.create(`${TABLE_ADD_ROW}${this.props.name}`)
+    FluidFunc.create(`${TABLE_ADD_ROW}${props.name}`)
       .onStart(this.thisAddRow);
-    FluidFunc.create(`${TABLE_SET_NEW_VALUE}${this.props.name}`)
+    FluidFunc.create(`${TABLE_SET_NEW_VALUE}${props.name}`)
       .onStart(this.thisSetNewRowValue)
       .spec('field', { require: true })
       .spec('value')
       .cache(1000);
-    FluidFunc.create(`${TABLE_SUBMIT_NEW_VALUE}${this.props.name}`)
+    FluidFunc.create(`${TABLE_SUBMIT_NEW_VALUE}${props.name}`)
       .onStart(this.thisSubmitNewRowValue);
-  }
+    FluidFunc.create(`${TABLE_SELECT_FILTER}${props.name}`)
+      .onStart(this.thisOnFilter)
+      .spec('field', { require: true })
+      .spec('value');
+    FluidFunc.create(`${TABLE_CLEAR_FILTER}${props.name}`)
+      .onStart(this.thisClearFilter);
+    }
   componentWillMount() {
-    this.setTableValue(this.props);
+    this.setTableValue(this.props.value);
     this.refresh();
   }
   componentWillReceiveProps(nextProps) {
@@ -132,9 +152,34 @@ export class TableBody extends React.Component {
     this.setState({ value, newRow: {} });
     return newRow;
   }
+  onFilter(param){
+    const filter = {...this.state.filter};
+    filter[param.field()]=param.value();
+    this.setState({filter});
+  }
+  filter(row){
+    let result = true;
+    for(let field in this.state.filter){
+        if(this.state.filter.hasOwnProperty(field)){
+          if(result && this.state.filter[field] && this.state.filter[field] !== 'clear'){
+            result = row[field]===this.state.filter[field];
+          }
+        }
+    }
+    return result;
+  }
+  clearFilter(){
+    this.setState({filter:{}});
+  }
   render() {
+    const values = this.state.value ? this.state.value.filter(this.thisFilter) : [];
     return (<tbody>
-      {this.state.value && this.state.value.map && this.state.value.map((row, index) =>
+      <TableFilters
+      filter={this.state.filter}
+      tableName={this.props.name} 
+      columns={this.props.columns} 
+      value={values} />
+      {values.map && values.map((row, index) =>
         (<TableRow
           onSelect={this.props.onSelect}
           editableIndex={this.state.editableIndex}
