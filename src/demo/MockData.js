@@ -1,40 +1,4 @@
-import { FluidApi, FluidTable } from '../lib';
-
-import ApiConfig from './ApiConfig';
-import InterfaceConfig from './ApiInterface';
-import React from 'react';
-
-export default class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.specs = [{
-			field: 'name',
-		}, {
-			field: 'company'
-		}];
-		this.columns = [{ field: 'name', label: 'Name', filter: true },
-		{ field: 'company', label: 'Company', filter: true }];
-		this.state = {};
-	}
-	componentWillMount() {
-		setTimeout(() => {
-			this.setState({
-				values
-			});
-		}, 800);
-	}
-	render() {
-		return (<FluidApi environment="prod" api={InterfaceConfig} config={ApiConfig}>
-			<button onClick={() => {
-				FluidApi.execute('addPeople', {});
-			}} type="button">clear</button>
-
-			<FluidTable name="sampleTable" columns={this.columns} value={this.state.values} />
-		</FluidApi>);
-	}
-}
-
-const values = [
+export default  [
 	{
 		"name": "Prescott",
 		"company": "Tellus Sem Mollis Institute"

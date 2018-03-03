@@ -44,4 +44,4 @@ export const loadForm = (form, data)=>{
       form, data
     }
   };
-}
+};

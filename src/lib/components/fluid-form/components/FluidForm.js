@@ -7,20 +7,20 @@ import { connect } from 'react-redux';
 import initalState from '../reducer/InitialState';
 
 export class FluidFormTag extends React.Component {
-  static clear(tableName) {
-    return FluidFunc.start(`${FORM_CLEAR}${tableName}`);
+  static clear(formName) {
+    return FluidFunc.start(`${FORM_CLEAR}${formName}`);
   }
-  static load(tableName, data) {
-    return FluidFunc.start(`${FORM_LOAD_DATA}${tableName}`, { ...data });
+  static load(formName, data) {
+    return FluidFunc.start(`${FORM_LOAD_DATA}${formName}`, { ...data });
   }
-  static submit(tableName) {
-    return FluidFunc.start(`${FORM_ON_SUBMIT}${tableName}`);
+  static submit(formName) {
+    return FluidFunc.start(`${FORM_ON_SUBMIT}${formName}`);
   }
-  static set(tableName, field, value) {
-    return FluidFunc.start(`${FORM_SET_FIELD}${tableName}`, { field, value });
+  static set(formName, field, value) {
+    return FluidFunc.start(`${FORM_SET_FIELD}${formName}`, { field, value });
   }
-  static on(tableName, field, callback) {
-    FluidFunc.create(`${tableName}.${field}`)
+  static on(formName, field, callback) {
+    FluidFunc.create(`${formName}.${field}`)
       .onStart(param => {
         const { value } = param;
         callback(value ? value() : undefined);
