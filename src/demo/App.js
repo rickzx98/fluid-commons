@@ -26,11 +26,14 @@ export default class App extends React.Component {
 	render() {
 		return (<FluidApi environment="prod" api={InterfaceConfig} config={ApiConfig}>
 			<button onClick={() => {
-				FluidApi.execute('addPeople', {});
+				const exec = FluidApi.execute('addPeople', {});
+				exec.then(({ addPeople }) => {
+					console.log(addPeople());
+				});
 			}} type="button">clear</button>
 
 			<FluidTable name="sampleTable" columns={this.columns} value={this.state.values} />
-		</FluidApi>);
+		</FluidApi >);
 	}
 }
 

@@ -5,7 +5,7 @@ const FluidName = '_$$FluidFunc_$$FluidApi_';
 const EFluidApi = `${FluidName}_e$`;
 export class FluidApi extends React.Component {
   static execute(api, param) {
-    FluidFunc.start(FluidName, { api, param });
+    return FluidFunc.start(FluidName, { api, param });
   }
   constructor(props) {
     super(props);
@@ -39,18 +39,37 @@ export class FluidApi extends React.Component {
   }
   execute({ api, param }) {
     return new Promise((resolve, reject) => {
-      FluidFunc.start(`${EFluidApi}${api()}`, { ...this.defaultParam, ...param() })
-        .then(result => {
-          resolve({ result });
-        })
-        .catch(error => {
-          const config = this.props.config;
-          if (config && config.catch && config.catch.apiError) {
-            config.catch.apiError(error);
-          }
-          reject(error);
-        });
+      this.getDefaultParam((defaultParam) => {
+        FluidFunc.start(`${EFluidApi}${api()}`, { ...defaultParam, ...param() })
+          .then(result => {
+            const resultObject = {};
+            resultObject[api()] = result;
+            resolve(resultObject);
+          })
+          .catch(error => {
+            const config = this.props.config;
+            if (config && config.catch && config.catch.apiError) {
+              config.catch.apiError(error);
+            }
+            reject(error);
+          });
+      });
     });
+  }
+  getDefaultParam(callback) {
+    if (this.defaultParam) {
+      if (this.defaultParam instanceof Promise) {
+        this.defaultParam.then(result => {
+          callback(result);
+        }).catch((error) => {
+          console.error(error);
+          callback()
+        });
+      } else {
+        callback(this.defaultParam);
+      }
+    }
+
   }
   render() {
     return (<span>{this.props.children}</span>);

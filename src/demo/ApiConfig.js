@@ -4,9 +4,13 @@ export default {
       const mockData = require('./MockData');
       return { mockData };
     },
-    prod: {
-      sampleParam: 'hello'
-    }
+    prod: new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          prodParam: 'hello'
+        })
+      }, 2000);
+    })
   },
   catch: {
     componentError: (error, info) => { },
