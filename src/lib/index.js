@@ -4,3 +4,4 @@ export { FluidForm, Actions as FluidFormActions, FluidFormReducer } from './comp
 export { FluidButton } from './components/fluid-button/';
 export { ConnectedFluidInput as FluidInput } from './components/fluid-input/';
 export { FluidApi } from './components/fluid-api/';
+export { FluidMergedView } from './components/fluid-merged-view/';

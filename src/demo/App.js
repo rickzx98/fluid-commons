@@ -1,9 +1,15 @@
-import { FluidApi, FluidTable } from '../lib';
+import { FluidApi, FluidMergedView } from '../lib';
 
 import ApiConfig from './ApiConfig';
 import InterfaceConfig from './ApiInterface';
 import React from 'react';
 
+const SampleField = ({ fieldLabels, field, mergedValue }) => {
+	return (<div key={field}>
+		<h5>{field}</h5>
+		&nbsp;{mergedValue[field]}
+	</div>);
+}
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -15,6 +21,16 @@ export default class App extends React.Component {
 		this.columns = [{ field: 'name', label: 'Name', filter: true },
 		{ field: 'company', label: 'Company', filter: true }];
 		this.state = {};
+		this.values = [{
+			id: '#000'
+		}, {
+			name: 'TheCar'
+		}, {
+			name: 'TheRealCar',
+			owner: 'Jerico'
+		}, {
+			registrationNo: '00044'
+		}];
 	}
 	componentWillMount() {
 		setTimeout(() => {
@@ -31,8 +47,9 @@ export default class App extends React.Component {
 					console.log(addPeople());
 				});
 			}} type="button">clear</button>
-
-			<FluidTable name="sampleTable" columns={this.columns} value={this.state.values} />
+			<FluidMergedView fieldValues={{
+				owner: (value) => `${value} loves Nica`
+			}} value={this.values} />
 		</FluidApi >);
 	}
 }
