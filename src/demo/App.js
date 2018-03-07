@@ -1,9 +1,22 @@
-import { FluidApi, FluidMergedView } from '../lib';
+import { FluidApi, FluidLabel, FluidMergedView } from '../lib';
 
 import ApiConfig from './ApiConfig';
+import FluidFunc from 'fluid-func';
 import InterfaceConfig from './ApiInterface';
 import React from 'react';
 
+FluidLabel.setup('goodLabel', {
+	en: {
+		appName: 'The EN App Name',
+		customer: 'Customer',
+		policy: 'Policy'
+	},
+	dk: {
+		appName: 'The DK App Name',
+		customer: 'Kunde',
+		policy: 'Police'
+	}
+});
 const SampleField = ({ fieldLabels, field, mergedValue }) => {
 	return (<div key={field}>
 		<h5>{field}</h5>
@@ -41,6 +54,9 @@ export default class App extends React.Component {
 	}
 	render() {
 		return (<FluidApi environment="prod" api={InterfaceConfig} config={ApiConfig}>
+			<FluidLabel name="goodLabel" locale="dk" label="appName" />
+			<FluidLabel name="goodLabel" locale="dk" label="customer" />
+			<FluidLabel name="goodLabel" locale="dk" label="policy" />
 			<button onClick={() => {
 				const exec = FluidApi.execute('addPeople', {});
 				exec.then(({ addPeople }) => {
