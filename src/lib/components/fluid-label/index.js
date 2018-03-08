@@ -1,19 +1,13 @@
-import FluidFunc from 'fluid-func';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+let FluidLabelConfig = {};
 export class FluidLabel extends React.Component {
+    static get(name, locale, label) {
+        return FluidLabelConfig[name][locale][label];
+    }
     static setup(name, config) {
-        FluidFunc.create(`__${name}_$$config`)
-            .onStart(({ locale, label }) => {
-                if (config[locale()]) {
-                    return config[locale()][label()];
-                } else {
-                    throw new Error(`Label ${locale()} doesn't exist`);
-                }
-            })
-            .spec('locale', { require: true })
-            .spec('label', { require: true });
+        FluidLabelConfig[name] = config;
     }
     constructor(props) {
         super(props);
@@ -28,19 +22,10 @@ export class FluidLabel extends React.Component {
         }
     }
     refreshLabel() {
-        if (FluidFunc.exists(`__${this.props.name}_$$config`)) {
-            FluidFunc.start(`__${this.props.name}_$$config`, {
-                label: this.props.label,
-                locale: this.props.locale
-            }).then(result => {
-                console.log('result', result);
-                if (result.value) {
-                    this.setState({ label: result.value(), error: false });
-                }
-                else {
-                    this.setState({ label: `<!--${this.props.label} label is not localized-->`, error: true })
-                }
-            }).catch(error => { throw new Error(error) });
+        if (FluidLabelConfig[this.props.name][this.props.locale][this.props.label]) {
+            this.setState({ label: FluidLabelConfig[this.props.name][this.props.locale][this.props.label], error: false });
+        } else {
+            this.setState({ label: `<!--${this.props.label} label is not localized-->`, error: true })
         }
     }
     render() {

@@ -46,6 +46,7 @@ export default class App extends React.Component {
 		}];
 	}
 	componentWillMount() {
+		console.log('label', FluidLabel.get('goodLabel', 'dk', 'appName'));
 		setTimeout(() => {
 			this.setState({
 				values
