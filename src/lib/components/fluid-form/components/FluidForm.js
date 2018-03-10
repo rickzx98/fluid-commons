@@ -36,7 +36,7 @@ export class FluidFormTag extends React.Component {
     this.thisLoadForm = this.loadForm.bind(this);
     const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
     const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
-    props.specs.forEach(spec => {
+    props.specs({ dispatch: props.dispatch, formName: props.name }).forEach(spec => {
       if (spec.public) {
         FluidFunc.create(`${FORM_SET_FIELD}${props.name}`)
           .onStart(param => {

@@ -1,4 +1,4 @@
-import { FluidApi, FluidLabel, FluidMergedView } from '../lib';
+import { FluidApi, FluidForm, FluidLabel, FluidMergedView } from '../lib';
 
 import ApiConfig from './ApiConfig';
 import FluidFunc from 'fluid-func';
@@ -8,7 +8,7 @@ import React from 'react';
 FluidLabel.setup('goodLabel', {
 	en: {
 		appName: 'The EN App Name',
-		customer: 'Customer',
+		customer: 'Customer',   
 		policy: 'Policy'
 	},
 	dk: {
@@ -26,7 +26,7 @@ const SampleField = ({ fieldLabels, field, mergedValue }) => {
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
-		this.specs = [{
+		this.specs = () => [{
 			field: 'name',
 		}, {
 			field: 'company'
@@ -55,18 +55,7 @@ export default class App extends React.Component {
 	}
 	render() {
 		return (<FluidApi environment="prod" api={InterfaceConfig} config={ApiConfig}>
-			<FluidLabel name="goodLabel" locale="dk" label="appName" />
-			<FluidLabel name="goodLabel" locale="dk" label="customer" />
-			<FluidLabel name="goodLabel" locale="dk" label="policy" />
-			<button onClick={() => {
-				const exec = FluidApi.execute('addPeople', {});
-				exec.then(({ addPeople }) => {
-					console.log(addPeople());
-				});
-			}} type="button">clear</button>
-			<FluidMergedView fieldValues={{
-				owner: (value) => `${value} loves Nica`
-			}} value={this.values} />
+			<FluidForm specs={this.specs.bind(this)}></FluidForm>
 		</FluidApi >);
 	}
 }
