@@ -50,7 +50,7 @@ export class FluidFormTag extends React.Component {
     });
     SubmitChain
       .onStart(parameter => {
-        props.onSubmit(getDataFromParam(props.specs, parameter));
+        props.onSubmit(getDataFromParam(props.dispatch, props.formName, props.specs, parameter));
         this.props.actions.submitForm(props.name);
       });
     LoadChain
@@ -85,7 +85,7 @@ export class FluidFormTag extends React.Component {
     this.props.actions.setFormValue(this.props.name, event.target.name, event.target.value);
   }
   loadForm(parameter) {
-    this.props.actions.loadForm(this.props.name, getDataFromParam(this.props.specs, parameter));
+    this.props.actions.loadForm(this.props.name, getDataFromParam(this.props.dispatch, this.props.formName, this.props.specs, parameter));
   }
   render() {
     return (<form
@@ -98,10 +98,10 @@ export class FluidFormTag extends React.Component {
 
 FluidFormTag.propTypes = types;
 
-function getDataFromParam(specs, param) {
+function getDataFromParam(dispatch, formName, specs, param) {
   let data = {};
   if (specs) {
-    specs.forEach(spec => {
+    specs({ dispatch, formName }).forEach(spec => {
       if (param[spec.field]) {
         data[spec.field] = param[spec.field]();
       }
