@@ -1,6 +1,7 @@
 import FluidFunc from 'fluid-func';
 import PropTypes from 'prop-types';
 import React from 'react';
+
 const FluidName = '_$$FluidFunc_$$FluidApi_';
 const EFluidApi = `${FluidName}_e$`;
 export class FluidApi extends React.Component {
@@ -68,8 +69,9 @@ export class FluidApi extends React.Component {
       } else {
         callback(this.defaultParam);
       }
+    } else {
+      callback({});
     }
-
   }
   render() {
     return (<span>{this.props.children}</span>);
