@@ -1,4 +1,4 @@
-import { FluidApi, FluidForm, FluidLabel, FluidMergedView } from '../lib';
+import { FluidApi, FluidForm, FluidLabel, FluidMergedView, FluidTable } from '../lib';
 
 import ApiConfig from './ApiConfig';
 import FluidFunc from 'fluid-func';
@@ -8,7 +8,7 @@ import React from 'react';
 FluidLabel.setup('goodLabel', {
 	en: {
 		appName: 'The EN App Name',
-		customer: 'Customer',   
+		customer: 'Customer',
 		policy: 'Policy'
 	},
 	dk: {
@@ -45,18 +45,11 @@ export default class App extends React.Component {
 			registrationNo: '00044'
 		}];
 	}
-	componentWillMount() {
-		console.log('label', FluidLabel.get('goodLabel', 'dk', 'appName'));
-		setTimeout(() => {
-			this.setState({
-				values
-			});
-		}, 800);
-	}
 	render() {
-		return (<FluidApi environment="prod" api={InterfaceConfig} config={ApiConfig}>
-			<FluidForm specs={this.specs.bind(this)}></FluidForm>
-		</FluidApi >);
+		return (<FluidTable
+			columns={this.columns}
+			name="sampleTable" value={[]}
+			emptyTableLabel="Empty Me!" />);
 	}
 }
 

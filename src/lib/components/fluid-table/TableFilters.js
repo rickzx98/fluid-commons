@@ -3,7 +3,7 @@ import React from 'react';
 import { TableColumnFilter } from './TableColumnFilter';
 
 export const TableFilters = ({ columns, value, tableName, filter}) => {
-    return (<tr>
+    return (<tr className="fluid-table-filter-row">
         {columns && columns.map((column, index) => (<td key={column.field + index}>
             {column.filter && 
                 (<TableColumnFilter 

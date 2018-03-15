@@ -16,7 +16,7 @@ export class FluidTable extends React.Component {
   static cancelEdit(tableName) {
     return FluidFunc.start(`${actions.TABLE_CANCEL_EDIT}${tableName}`);
   }
-  static clearFilter(tableName){
+  static clearFilter(tableName) {
     return FluidFunc.start(`${actions.TABLE_CLEAR_FILTER}${tableName}`);
   }
   constructor(props) {
@@ -62,7 +62,7 @@ export class FluidTable extends React.Component {
       style={this.props.style}
       className={this.props.className}>
       <TableHead columnClass={this.props.columnClass} columns={this.props.columns} />
-      <TableBody onSelect={this.props.onSelect} rowClass={this.props.rowClass}
+      <TableBody emptyTableLabel={this.props.emptyTableLabel} onSelect={this.props.onSelect} rowClass={this.props.rowClass}
         columnClass={this.props.columnClass} name={this.props.name}
         fieldKey={this.props.fieldKey} columns={this.props.columns} value={this.props.value} />
     </table>);
@@ -83,7 +83,8 @@ FluidTable.propTypes = {
   onEdit: PropTypes.func,
   onSubmit: PropTypes.func,
   onSort: PropTypes.func,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  emptyTableLabel: PropTypes.string
 };
 
 

@@ -1,17 +1,18 @@
 import {
-   TABLE_ADD_ROW,
-   TABLE_CANCEL_EDIT,
-   TABLE_CLEAR_FILTER,
-   TABLE_EDIT,
-   TABLE_REFRESH,
-   TABLE_SELECT_FILTER,
-   TABLE_SET_NEW_VALUE,
-   TABLE_SUBMIT_NEW_VALUE
+  TABLE_ADD_ROW,
+  TABLE_CANCEL_EDIT,
+  TABLE_CLEAR_FILTER,
+  TABLE_EDIT,
+  TABLE_REFRESH,
+  TABLE_SELECT_FILTER,
+  TABLE_SET_NEW_VALUE,
+  TABLE_SUBMIT_NEW_VALUE
 } from './fluid.info';
 
 import FluidFunc from 'fluid-func';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { TableEmptyMessage } from './TableEmptyMessage';
 import { TableFilters } from './TableFilters';
 import { TableRow } from './TableRow';
 
@@ -62,7 +63,7 @@ export class TableBody extends React.Component {
       .spec('value');
     FluidFunc.create(`${TABLE_CLEAR_FILTER}${props.name}`)
       .onStart(this.thisClearFilter);
-    }
+  }
   componentWillMount() {
     this.setTableValue(this.props.value);
     this.refresh();
@@ -152,34 +153,37 @@ export class TableBody extends React.Component {
     this.setState({ value, newRow: {} });
     return newRow;
   }
-  onFilter(param){
-    const filter = {...this.state.filter};
-    filter[param.field()]=param.value();
-    this.setState({filter});
+  onFilter(param) {
+    const filter = { ...this.state.filter };
+    filter[param.field()] = param.value();
+    this.setState({ filter });
   }
-  filter(row){
+  filter(row) {
     let result = true;
-    for(let field in this.state.filter){
-        if(this.state.filter.hasOwnProperty(field)){
-          if(result && this.state.filter[field] && this.state.filter[field] !== 'clear'){
-            result = row[field]===this.state.filter[field];
-          }
+    for (let field in this.state.filter) {
+      if (this.state.filter.hasOwnProperty(field)) {
+        if (result && this.state.filter[field] && this.state.filter[field] !== 'clear') {
+          result = row[field] === this.state.filter[field];
         }
+      }
     }
     return result;
   }
-  clearFilter(){
-    this.setState({filter:{}});
+  clearFilter() {
+    this.setState({ filter: {} });
   }
   render() {
     const values = this.state.value ? this.state.value.filter(this.thisFilter) : [];
     return (<tbody>
       <TableFilters
-      filter={this.state.filter}
-      tableName={this.props.name} 
-      columns={this.props.columns} 
-      value={values} />
-      {values.map && values.map((row, index) =>
+        filter={this.state.filter}
+        tableName={this.props.name}
+        columns={this.props.columns}
+        value={values} />
+      {(!values.length || values.length === 0) && (<TableEmptyMessage
+        emptyTableLabel={this.props.emptyTableLabel}
+        columns={this.props.columns} />)}
+      {values.length > 0 && values.map && values.map((row, index) =>
         (<TableRow
           onSelect={this.props.onSelect}
           editableIndex={this.state.editableIndex}
@@ -206,4 +210,5 @@ TableBody.propTypes = {
   name: PropTypes.string.isRequired,
   rowClass: PropTypes.string,
   onSelect: PropTypes.func,
+  emptyTableLabel: PropTypes.string
 };
