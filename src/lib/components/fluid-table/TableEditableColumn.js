@@ -43,9 +43,10 @@ export class TableEditableColumn extends React.Component {
     let colElem = <td />;
     const className = `${this.props.column.className || ''} ${this.props.columnClass || ''}`;
     if (this.props.column.editableComponent) {
+      const EditableComponent = this.props.column.editableComponent;
       colElem = (<td style={this.props.column.style} className={className}>
         <form onSubmit={this.thisOnSubmit} onChange={this.thisOnChange}
-          className="editable-column-form">{colElem.editableComponent({
+          className="editable-column-form">{EditableComponent({
             value: this.props.value,
             column: this.props.column,
             currentValue: this.state.value

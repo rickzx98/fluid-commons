@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
 export class TableHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +42,8 @@ export class TableHeader extends React.Component {
     const column = this.props.column;
     let colElem = <th />;
     if (column.headerComponent) {
-      colElem = <th onClick={this.thisOnClick} style={this.state.style} className={this.state.className}>{colElem.headerComponent({ column })}</th>;
+      const HeaderComponent = column.headerComponent;
+      colElem = <th onClick={this.thisOnClick} style={this.state.style} className={this.state.className}>{HeaderComponent}</th>;
     } else {
       colElem = <th onClick={this.thisOnClick} style={this.state.style} className={this.state.className}>{column.label || column.field}</th>;
     }

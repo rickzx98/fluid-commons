@@ -9,12 +9,14 @@ FluidLabel.setup('goodLabel', {
 	en: {
 		appName: 'The EN App Name',
 		customer: 'Customer',
-		policy: 'Policy'
+		policy: 'Policy',
+		name: 'Name in EN'
 	},
 	dk: {
 		appName: 'The DK App Name',
 		customer: 'Kunde',
-		policy: 'Police'
+		policy: 'Police',
+		name: 'Name in DK'
 	}
 });
 const SampleField = ({ fieldLabels, field, mergedValue }) => {
@@ -31,7 +33,7 @@ export default class App extends React.Component {
 		}, {
 			field: 'company'
 		}];
-		this.columns = [{ field: 'name', label: 'Name', filter: true },
+		this.columns = [{ field: 'name', headerComponent:<FluidLabel name="goodLabel" locale="en" label="name" />, filter: true },
 		{ field: 'company', label: 'Company', filter: true }];
 		this.state = {};
 		this.values = [{
