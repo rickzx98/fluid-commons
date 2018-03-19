@@ -114,7 +114,10 @@ function loadDataFromParam(dispatch, formName, specs, param) {
   if (specs) {
     specs({ dispatch, formName }).forEach(spec => {
       if (param[spec.field]) {
-        data[spec.field] = param[spec.field]();
+        data[spec.field] = {
+          value: param[spec.field](),
+          label: spec.label
+        };
       }
     });
   }
