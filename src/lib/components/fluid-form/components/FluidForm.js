@@ -118,6 +118,10 @@ function loadDataFromParam(dispatch, formName, specs, param) {
           value: param[spec.field](),
           label: spec.label
         };
+      } else {
+        data[spec.field] = {
+          label: spec.label
+        };
       }
     });
   }
