@@ -1,4 +1,4 @@
-import { FORM_INVALID, FORM_LOAD_DATA, FORM_RESET, FORM_SET_FORM_VALUE, FORM_SUBMITTED } from '../actions/';
+import { FORM_INIT_FIELD_DATA, FORM_INVALID, FORM_LOAD_DATA, FORM_RESET, FORM_SET_FORM_VALUE, FORM_SUBMITTED } from '../actions/';
 
 import FluidFunc from 'fluid-func';
 
@@ -39,7 +39,18 @@ export default function FormReducer(state = {}, action) {
       }
       const newState = { ...state };
       const formState = { ...newState[form], data: { ...newState[form].data }, touched: true };
-      formState.data[field] = value;
+      const newField = { ...formState.data[field], value };
+      formState.data[field] = newField;
+      newState[form] = formState;
+      return newState;
+    }
+    case FORM_INIT_FIELD_DATA: {
+      const { form, spec } = action.payload;
+      const newState = { ...state };
+      const formState = { ...newState[form], data: { ...newState[form].data } };
+      formState.data[spec.field] = {
+        label: spec.label
+      };
       newState[form] = formState;
       return newState;
     }

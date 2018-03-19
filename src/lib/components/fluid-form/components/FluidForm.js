@@ -36,6 +36,7 @@ export class FluidFormTag extends React.Component {
     this.thisLoadForm = this.loadForm.bind(this);
     const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
     const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
+    props.actions.resetForm(props.name, initalState);
     props.specs({ dispatch: props.dispatch, formName: props.name }).forEach(spec => {
       if (spec.public) {
         FluidFunc.create(`${FORM_SET_FIELD}${props.name}`)
@@ -45,6 +46,7 @@ export class FluidFormTag extends React.Component {
           })
           .spec('field', { require: true });
       }
+      props.actions.initFieldData(props.name, spec);
       LoadChain.spec(spec.field, spec.data);
       SubmitChain.spec(spec.field, spec.data);
     });
@@ -70,9 +72,6 @@ export class FluidFormTag extends React.Component {
         this.props.actions.resetForm(props.name, initalState);
       });
   }
-  componentWillMount() {
-    this.props.actions.resetForm(this.props.name, initalState);
-  }
   submitForm(event) {
     if (event) {
       event.preventDefault();
@@ -85,7 +84,7 @@ export class FluidFormTag extends React.Component {
     this.props.actions.setFormValue(this.props.name, event.target.name, event.target.value);
   }
   loadForm(parameter) {
-    this.props.actions.loadForm(this.props.name, getDataFromParam(this.props.dispatch, this.props.formName, this.props.specs, parameter));
+    this.props.actions.loadForm(this.props.name, loadDataFromParam(this.props.dispatch, this.props.formName, this.props.specs, parameter));
   }
   render() {
     return (<form
@@ -99,6 +98,18 @@ export class FluidFormTag extends React.Component {
 FluidFormTag.propTypes = types;
 
 function getDataFromParam(dispatch, formName, specs, param) {
+  let data = {};
+  if (specs) {
+    specs({ dispatch, formName }).forEach(spec => {
+      if (param[spec.field]) {
+        data[spec.field] = param[spec.field]().value;
+      }
+    });
+  }
+  return data;
+}
+
+function loadDataFromParam(dispatch, formName, specs, param) {
   let data = {};
   if (specs) {
     specs({ dispatch, formName }).forEach(spec => {

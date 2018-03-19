@@ -37,11 +37,20 @@ export const invalidForm = (form, field, message) => {
   };
 };
 
-export const loadForm = (form, data)=>{
+export const loadForm = (form, data) => {
   return {
     type: types.FORM_LOAD_DATA,
     payload: {
       form, data
+    }
+  };
+};
+
+export const initFieldData = (form, spec) => {
+  return {
+    type: types.FORM_INIT_FIELD_DATA,
+    payload: {
+      form, spec
     }
   };
 };
