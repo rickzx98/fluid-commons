@@ -9,6 +9,7 @@ export const types = {
     PropTypes.element,
     PropTypes.array
   ]),
+  fieldNode: PropTypes.func,
   specs: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onFailed: PropTypes.func.isRequired,

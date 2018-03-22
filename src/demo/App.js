@@ -1,28 +1,29 @@
 import { FluidForm } from '../lib/';
 import React from 'react';
-
 import { connect } from 'react-redux';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.specs = ()=> {
+        this.specs = () => {
             return [{
                 field: 'name',
                 label: 'Library Name'
+            },
+            {
+                field: 'age',
+                label: 'Age'
             }]
         };
     }
     render() {
         return (
-            <FluidForm name="sampleForm" specs={this.specs}>
-                {FluidForm.getLabel(this.props.sampleForm, 'name')}
-                <input name="name" value={FluidForm.getValue(this.props.sampleForm, 'name')}
-                       placeholder={FluidForm.getLabel(this.props.sampleForm,'name')}/>
-            </FluidForm>);
+            <FluidForm name="sampleForm" fieldNode={(field) => {
+                return <input key={field.name} name={field.name} placeholder={field.label} required={field.require} />;
+            }} specs={this.specs}>Hello World!</FluidForm>);
     }
 }
-function mapStateToProps({fluidForm:{sampleForm}}) {
+function mapStateToProps({ fluidForm: { sampleForm } }) {
     return {
         sampleForm
     };

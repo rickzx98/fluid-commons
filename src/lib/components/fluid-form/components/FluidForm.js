@@ -33,7 +33,7 @@ export class FluidFormTag extends React.Component {
     }
 
     static load(formName, data) {
-        return FluidFunc.start(`${FORM_LOAD_DATA}${formName}`, {...data});
+        return FluidFunc.start(`${FORM_LOAD_DATA}${formName}`, { ...data });
     }
 
     static submit(formName) {
@@ -41,7 +41,7 @@ export class FluidFormTag extends React.Component {
     }
 
     static set(formName, field, value) {
-        return FluidFunc.start(`${FORM_SET_FIELD}${formName}`, {field, value});
+        return FluidFunc.start(`${FORM_SET_FIELD}${formName}`, { field, value });
     }
 
     static on(formName, field, callback) {
@@ -63,14 +63,15 @@ export class FluidFormTag extends React.Component {
         const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
         const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
         props.actions.resetForm(props.name, initalState);
-        props.specs({dispatch: props.dispatch, formName: props.name}).forEach(spec => {
+        this.thisSpecs = props.specs({ dispatch: props.dispatch, formName: props.name });
+        this.thisSpecs.forEach(spec => {
             if (spec.public) {
                 FluidFunc.create(`${FORM_SET_FIELD}${props.name}`)
                     .onStart(param => {
                         const { field, value } = param;
                         props.actions.setFormValue(props.name, field(), value ? value() : undefined);
                     })
-                    .spec('field', {require: true});
+                    .spec('field', { require: true });
             }
             props.actions.initFieldData(props.name, spec);
             LoadChain.spec(spec.field, spec.data);
@@ -86,7 +87,7 @@ export class FluidFormTag extends React.Component {
                 this.thisLoadForm(parameter);
             })
             .onFail((error, retry, reject) => {
-                this.props.onFailed({error});
+                this.props.onFailed({ error });
                 reject();
             });
         FluidFunc.create(`${FORM_ON_SUBMIT}${props.name}`)
@@ -120,9 +121,18 @@ export class FluidFormTag extends React.Component {
         return (<form
             onChange={this.thisOnChange}
             onSubmit={this.thisSubmitForm} name={this.props.name}>
+            {this.thisSpecs && this.props.fieldNode && this.thisSpecs.map((field, index) => this.props.fieldNode(createField(field), index))}
             {this.props.children}
         </form>);
     }
+}
+
+function createField(field) {
+    return {
+        name: field.field,
+        label: field.label,
+        require: field.data ? field.data.require : false
+    };
 }
 
 FluidFormTag.propTypes = types;
@@ -130,7 +140,7 @@ FluidFormTag.propTypes = types;
 function getDataFromParam(dispatch, formName, specs, param) {
     let data = {};
     if (specs) {
-        specs({dispatch, formName}).forEach(spec => {
+        specs({ dispatch, formName }).forEach(spec => {
             if (param[spec.field]) {
                 data[spec.field] = param[spec.field]().value;
             }
@@ -142,7 +152,7 @@ function getDataFromParam(dispatch, formName, specs, param) {
 function loadDataFromParam(dispatch, formName, specs, param) {
     let data = {};
     if (specs) {
-        specs({dispatch, formName}).forEach(spec => {
+        specs({ dispatch, formName }).forEach(spec => {
             if (param[spec.field]) {
                 data[spec.field] = {
                     value: param[spec.field](),
