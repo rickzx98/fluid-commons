@@ -260,7 +260,10 @@ module.exports = {
   // CRL: added externals block for library
   externals: {
     'react': 'react',
-    'react-dom': 'react-dom'
+    'react-dom': 'react-dom',
+    'fluid-func': 'fluid-func',
+    'redux': 'redux',
+    'react-redux': 'react-redux'
   },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
