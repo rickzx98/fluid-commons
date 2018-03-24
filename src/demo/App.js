@@ -8,19 +8,32 @@ class App extends React.Component {
         this.specs = () => {
             return [{
                 field: 'name',
-                label: 'Library Name'
+                label: 'Library Name',
+                data: {require: true}
             },
-            {
-                field: 'age',
-                label: 'Age'
-            }]
+                {
+                    field: 'age',
+                    label: 'Age'
+                }]
         };
     }
+
+    componentWillMount() {
+        FluidForm.load('sampleForm', {name: 'Jerico Pogi', age: 32});
+    }
+
     render() {
         return (
             <FluidForm name="sampleForm" fieldNode={(field) => {
-                return <input key={field.name} name={field.name} placeholder={field.label} required={field.require} />;
-            }} specs={this.specs}>Hello World!</FluidForm>);
+                return <input key={field.name}
+                 name={field.name}
+                  placeholder={field.label}
+                  value={FluidForm.getValue(this.props.sampleForm, field.name)}
+                  />;
+            }} specs={this.specs}>
+
+                <button type="submit">Sub</button>
+            </FluidForm>);
     }
 }
 function mapStateToProps({ fluidForm: { sampleForm } }) {
