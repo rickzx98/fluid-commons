@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const FluidName = '_$$FluidFunc_$$FluidApi_';
+const StorageName = '_$$ss_';
 const EFluidApi = `${FluidName}_e$`;
-let storage = {};
 export class FluidApi extends React.Component {
-  static storage() {
-    return storage;
+  static storage(context, action) {
+    return FluidFunc.start(`${FluidName}${StorageName}`, {
+      context,
+      action
+    });
   }
   static execute(api, param) {
     return FluidFunc.start(FluidName, { api, param });
@@ -17,12 +20,17 @@ export class FluidApi extends React.Component {
     this.state = { loading: false };
     this.onCreate();
     this.thisExecute = this.execute.bind(this);
+    this.thisFetchStorage = this.fetchStorage.bind(this);
     if (FluidFunc.exists(FluidName)) {
       throw new Error('Only one instance of FluidApi is allowed');
     } else {
       FluidFunc.create(FluidName)
         .onStart(this.thisExecute)
         .spec('api', { require: true });
+      FluidFunc.create(`${FluidName}${StorageName}`)
+        .onStart(this.thisFetchStorage)
+        .spec('context', { require: true })
+        .spec('action');
     }
   }
   componentDidCatch(error, info) {
@@ -30,6 +38,30 @@ export class FluidApi extends React.Component {
     if (config && config.catch && config.componentError) {
       config.componentError(error, info);
     }
+  }
+  fetchStorage({ context, action }) {
+    const ctx = this.storage[context()];
+    let field, value;
+    if (action) {
+      console.log('action', action);
+      field = action('field');
+      value = action('value');
+      console.log('value', value);
+    }
+    const isArray = ctx instanceof Array;
+    let result = ctx;
+    if (field) {
+      if (value) {
+        ctx[field] = value;
+      } else {
+        result = ctx[field];
+      }
+    } else {
+      if (value && isArray) {
+        ctx.push(value);
+      }
+    }
+    return { data: result };
   }
   handleStorage() {
     const config = this.props.config;
@@ -39,7 +71,7 @@ export class FluidApi extends React.Component {
         this.setState({ loading: true });
         store.then((data) => {
           this.setState({ loading: false });
-          storage = data;
+          this.storage = data;
         }).catch(error => {
           if (config.componentError) {
             config.componentError(error);
@@ -49,7 +81,7 @@ export class FluidApi extends React.Component {
           this.setState({ loading: false });
         });
       } else {
-        storage = store;
+        this.storage = store;
       }
     }
   }

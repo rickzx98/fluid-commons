@@ -18,7 +18,8 @@ export default {
   },
   storage: {
     dev: {
-      data: []
+      data: [],
+      obj: {},
     }
   }
 };
