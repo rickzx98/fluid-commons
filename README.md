@@ -23,7 +23,13 @@ Commonly used react components with [Fluid-Func](https://github.com/rickzx98/flu
                 apiError: (error)=>{
                     //catches api call error
                 }
-            }
+            },
+            storage: { // provides a mutable storage across the application
+                production: {},
+                development: {},
+                // production: new Promise() - can be written in Promise
+                // production: ()=>{} - can be writting in Function
+            } // accessible via FluidApi.storage();
         };
 
         const Api = {
