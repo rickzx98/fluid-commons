@@ -15,5 +15,10 @@ export default {
   catch: {
     componentError: (error, info) => { },
     apiError: (error) => { }
+  },
+  storage: {
+    dev: {
+      data: []
+    }
   }
 };

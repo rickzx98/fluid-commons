@@ -1,4 +1,7 @@
-import { FluidForm } from '../lib/';
+import { FluidApi, FluidForm } from '../lib/';
+
+import ApiInterface from './ApiInterface';
+import Config from './ApiConfig';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -9,31 +12,33 @@ class App extends React.Component {
             return [{
                 field: 'name',
                 label: 'Library Name',
-                data: {require: true}
+                data: { require: true }
             },
-                {
-                    field: 'age',
-                    label: 'Age'
-                }]
+            {
+                field: 'age',
+                label: 'Age'
+            }]
         };
     }
 
     componentWillMount() {
-        FluidForm.load('sampleForm', {name: 'Jerico Pogi', age: 32});
+        FluidForm.load('sampleForm', { name: 'Jerico Pogi', age: 32 });
     }
 
     render() {
-        return (
-            <FluidForm name="sampleForm" fieldNode={(field) => {
+        return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
+            <FluidForm onSubmit={() => { }} onFailed={() => { }} name="sampleForm" fieldNode={(field) => {
                 return <input key={field.name}
-                 name={field.name}
-                  placeholder={field.label}
-                  value={FluidForm.getValue(this.props.sampleForm, field.name)}
-                  />;
+                    name={field.name}
+                    placeholder={field.label}
+                    value={FluidForm.getValue(this.props.sampleForm, field.name)}
+                />;
             }} specs={this.specs}>
-
-                <button type="submit">Sub</button>
-            </FluidForm>);
+                <button type="submit" onClick={() => {
+                    FluidApi.execute('addPeople');
+                }}>Sub</button>
+            </FluidForm>
+        </FluidApi>);
     }
 }
 function mapStateToProps({ fluidForm: { sampleForm } }) {

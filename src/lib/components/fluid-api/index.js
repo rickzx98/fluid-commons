@@ -4,12 +4,17 @@ import React from 'react';
 
 const FluidName = '_$$FluidFunc_$$FluidApi_';
 const EFluidApi = `${FluidName}_e$`;
+let storage = {};
 export class FluidApi extends React.Component {
+  static storage() {
+    return storage;
+  }
   static execute(api, param) {
     return FluidFunc.start(FluidName, { api, param });
   }
   constructor(props) {
     super(props);
+    this.state = { loading: false };
     this.onCreate();
     this.thisExecute = this.execute.bind(this);
     if (FluidFunc.exists(FluidName)) {
@@ -26,11 +31,37 @@ export class FluidApi extends React.Component {
       config.componentError(error, info);
     }
   }
-  onCreate() {
+  handleStorage() {
+    const config = this.props.config;
+    if (config && config.storage) {
+      const store = config.storage[this.props.environment] instanceof Function ? config.storage[this.props.environment]() : config.storage[this.props.environment];
+      if (store instanceof Promise) {
+        this.setState({ loading: true });
+        store.then((data) => {
+          this.setState({ loading: false });
+          storage = data;
+        }).catch(error => {
+          if (config.componentError) {
+            config.componentError(error);
+          } else {
+            console.error(error);
+          }
+          this.setState({ loading: false });
+        });
+      } else {
+        storage = store;
+      }
+    }
+  }
+  handleDefaultParam() {
     const config = this.props.config;
     if (config && config.environment) {
       this.defaultParam = config.environment[this.props.environment] instanceof Function ? config.environment[this.props.environment]() : config.environment[this.props.environment];
     }
+  }
+  onCreate() {
+    this.handleStorage();
+    this.handleDefaultParam();
     for (let apiName in this.props.api) {
       if (this.props.api.hasOwnProperty(apiName)) {
         FluidFunc.create(`${EFluidApi}${apiName}`)
@@ -63,7 +94,6 @@ export class FluidApi extends React.Component {
         this.defaultParam.then(result => {
           callback(result);
         }).catch((error) => {
-          console.error(error);
           callback()
         });
       } else {
@@ -74,7 +104,7 @@ export class FluidApi extends React.Component {
     }
   }
   render() {
-    return (<span>{this.props.children}</span>);
+    return (<span>{!this.state.loading && this.props.children}</span>);
   }
 }
 FluidApi.propTypes = {
