@@ -24,12 +24,12 @@ Commonly used react components with [Fluid-Func](https://github.com/rickzx98/flu
                     //catches api call error
                 }
             },
-            storage: { // provides a mutable storage across the application
+            storage: { // provides a temporary storage across the application
                 production: {},
                 development: {},
                 // production: new Promise() - can be written in Promise
                 // production: ()=>{} - can be writting in Function
-            } // accessible via FluidApi.storage();
+            } // accessible via FluidApi.storage(context, action);
         };
 
         const Api = {
@@ -54,6 +54,7 @@ Commonly used react components with [Fluid-Func](https://github.com/rickzx98/flu
 
 - To call an api method
 ```javascript
+
     FluidApi.execute('saveAction', {
         anyParam:'anyParam'
     }).then(()=> {
@@ -61,6 +62,83 @@ Commonly used react components with [Fluid-Func](https://github.com/rickzx98/flu
     }).catch(err=>{
         //failed
     });
+```
+
+- To access the storage
+```javascript
+
+
+    /*  storage: { 
+        development: {
+            person: {
+                name:'John'
+            },
+            people: [
+                {
+                    name:'John'
+                },
+                {
+                    name:'Mary'
+                }
+            ]
+        },
+    } */
+
+
+    FluidApi.storage('person', {
+       field:'name'
+    }).then(({data})=> {
+       // data will return person.name
+    }).catch(err=>{
+        //failed
+    });
+
+    FluidApi.storage('person', {
+       field:'name',
+       value:'Johnny'
+    }).then(({data})=> {
+       // data will set person.name = 'Johnny'
+    }).catch(err=>{
+        //failed
+    });
+
+    FluidApi.storage('people').
+      then(({data})=> {
+       // data will get people list
+    }).catch(err=>{
+        //failed
+    });
+
+    FluidApi.storage('people', {
+        field: 1,
+        value: {
+            name: 'Mary Ann'
+        }
+    }).
+      then(({data})=> {
+       // data set update array index 1 with new value
+    }).catch(err=>{
+        //failed
+    });
+
+    FluidApi.storage('people', {
+        remove: 1
+    }).
+      then(({data})=> {
+       // data remove index 1 from the array
+    }).catch(err=>{
+        //failed
+    });
+
+    FluidApi.storage('person', {
+        remove: 'name'
+    }).
+      then(({data})=> {
+       // data remove field name from person object
+    }).catch(err=>{
+        //failed
+    });
+
 ```
 
 #### Fluid-button

@@ -16,7 +16,11 @@ export default {
               .then(({ data }) => {
                 FluidApi.storage('obj')
                   .then(({ data }) => {
-                    console.log('obj', data());
+                    console.log('obj-withName', data());
+                    FluidApi.storage('obj', { remove: 'name' })
+                      .then(({ data }) => {
+                        console.log('obj-woutName', data());
+                      });
                   });
               });
           });

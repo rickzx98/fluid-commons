@@ -41,26 +41,44 @@ export class FluidApi extends React.Component {
   }
   fetchStorage({ context, action }) {
     const ctx = this.storage[context()];
-    let field, value;
+    let field, value, remove;
     if (action) {
-      console.log('action', action);
       field = action('field');
       value = action('value');
-      console.log('value', value);
+      remove = action('remove')
     }
     const isArray = ctx instanceof Array;
-    let result = ctx;
+    let ctxClone = {};
+    if (isArray) {
+      ctxClone = [...ctx];
+    } else {
+      ctxClone = { ...ctx };
+    }
+
+    let result = ctxClone;
+
     if (field) {
       if (value) {
-        ctx[field] = value;
+        ctxClone[field] = value;
+        this.storage[context()] = ctxClone;
       } else {
-        result = ctx[field];
+        result = ctxClone[field];
       }
     } else {
       if (value && isArray) {
-        ctx.push(value);
+        ctxClone.push(value);
+        this.storage[context()] = ctxClone;
       }
+      if (remove && isArray) {
+        ctxClone.splice(remove, 1);
+        this.storage[context()] = ctxClone;
+      } else if (remove) {
+        delete ctxClone[remove];
+        this.storage[context()] = ctxClone;
+      }
+      result = ctxClone;
     }
+
     return { data: result };
   }
   handleStorage() {
