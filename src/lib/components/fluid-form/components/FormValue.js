@@ -9,7 +9,6 @@ function getDataFromParam(specs, param) {
             }
         });
     }
-    console.log('data', data);
     return data;
 }
 export default class FormValue extends FluidValue {

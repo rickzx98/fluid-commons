@@ -1,5 +1,6 @@
-export default class FormValue {
+export default class FluidValue {
     constructor(fieldDefinitions, value) {
+        this.getRaw = () => value;
         this.getPrimaryKey = () => getPrimaryKey(fieldDefinitions, value);
         this.getPrimaryField = () => getPrimaryField(fieldDefinitions);
         for (let field in value) {
@@ -21,3 +22,4 @@ function getPrimaryField(fieldDefinitions) {
         .filter(definition => definition.primaryKey)
         .map(definition => definition.field)[0];
 }
+
