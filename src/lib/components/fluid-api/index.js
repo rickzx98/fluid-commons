@@ -57,7 +57,7 @@ export class FluidApi extends React.Component {
 
     let result = ctxClone;
 
-    if (field) {
+    if (field !== undefined) {
       if (value) {
         ctxClone[field] = value;
         this.storage[context()] = ctxClone;
