@@ -69,10 +69,10 @@ export class FluidApi extends React.Component {
         ctxClone.push(value);
         this.storage[context()] = ctxClone;
       }
-      if (remove && isArray) {
+      if (remove !== undefined && isArray) {
         ctxClone.splice(remove, 1);
         this.storage[context()] = ctxClone;
-      } else if (remove) {
+      } else if (remove !== undefined) {
         delete ctxClone[remove];
         this.storage[context()] = ctxClone;
       }

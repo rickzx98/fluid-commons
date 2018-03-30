@@ -12,17 +12,18 @@ export default {
         FluidApi.storage('data')
           .then(({ data }) => {
             console.log('result', data());
-            FluidApi.storage('obj', { field: 'name', value: 'Jeric' })
-              .then(({ data }) => {
-                FluidApi.storage('obj')
-                  .then(({ data }) => {
-                    console.log('obj-withName', data());
-                    FluidApi.storage('obj', { remove: 'name' })
-                      .then(({ data }) => {
-                        console.log('obj-woutName', data());
-                      });
-                  });
+            FluidApi.storage('data', {
+              field: 0, value: {
+                company: "Tellus Sem Mollis Institute2",
+                name: "Prescott"
+              }
+            }).then(({ data }) => {
+              FluidApi.storage('data', {
+                remove: 0
+              }).then(({ data }) => {
+                console.log('remove', data());
               });
+            });
           });
       });
       console.log('dev-param', mockData());
