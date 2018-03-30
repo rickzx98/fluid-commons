@@ -11,6 +11,7 @@ class App extends React.Component {
         this.specs = () => {
             return [{
                 field: 'name',
+                primaryKey: true,
                 label: 'Library Name',
                 data: { require: true }
             },
@@ -27,7 +28,7 @@ class App extends React.Component {
 
     render() {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
-            <FluidForm onSubmit={() => { }} onFailed={() => { }} name="sampleForm" fieldNode={(field) => {
+            <FluidForm onSubmit={(value) => { console.log('value', value); }} onFailed={() => { }} name="sampleForm" fieldNode={(field) => {
                 return <input key={field.name}
                     name={field.name}
                     placeholder={field.label}
