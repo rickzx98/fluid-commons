@@ -2,6 +2,7 @@ import { FORM_CLEAR, FORM_INVALID, FORM_LOAD_DATA, FORM_ON_SUBMIT, FORM_SET_FIEL
 import { mapDispatchToProps, mapStateToProps, types } from './FluidFormConfig';
 
 import FluidFunc from 'fluid-func';
+import FormValue from './FormValue';
 import React from 'react';
 import { connect } from 'react-redux';
 import initalState from '../reducer/InitialState';
@@ -74,7 +75,7 @@ export class FluidFormTag extends React.Component {
         });
         SubmitChain
             .onStart(parameter => {
-                props.onSubmit(getDataFromParam(props.dispatch, props.formName, props.specs, parameter));
+                props.onSubmit(new FormValue(this.thisSpecs, parameter));
                 this.props.actions.submitForm(props.name);
             });
         LoadChain
@@ -118,14 +119,14 @@ export class FluidFormTag extends React.Component {
     }
 
     loadForm(parameter) {
-        this.props.actions.loadForm(this.props.name, getDataFromParam(this.props.dispatch, this.props.formName, this.props.specs, parameter));
+        this.props.actions.loadForm(this.props.name, new FormValue(this.thisSpecs, parameter).getRawValue());
     }
 
     render() {
         return (<form
             onChange={this.thisOnChange}
             onSubmit={this.thisSubmitForm} name={this.props.name}>
-            {this.thisSpecs && this.props.fieldNode && this.thisSpecs.map((field, index) => this.props.fieldNode(createField(field), index))}
+            {this.thisSpecs && this.props.fieldNode && this.thisSpecs.filter(spec => !spec.skipRender).map((field, index) => this.props.fieldNode(createField(field), index))}
             {this.props.children}
         </form>);
     }
@@ -140,21 +141,5 @@ function createField(field) {
 }
 
 FluidFormTag.propTypes = types;
-
-function getDataFromParam(dispatch, formName, specs, param) {
-    let data = {};
-    if (specs) {
-        specs({ dispatch, formName }).forEach(spec => {
-            if (param[spec.field]) {
-                data[spec.field] = param[spec.field]();
-                if (spec.primaryKey) {
-                    data['primaryKey'] = param[spec.field]();
-                }
-            }
-        });
-    }
-    return data;
-}
-
 
 export const FluidForm = connect(mapStateToProps, mapDispatchToProps)(FluidFormTag);

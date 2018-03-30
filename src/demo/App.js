@@ -1,4 +1,4 @@
-import { FluidApi, FluidForm } from '../lib/';
+import { FluidApi, FluidForm, FluidTable } from '../lib/';
 
 import ApiInterface from './ApiInterface';
 import Config from './ApiConfig';
@@ -17,7 +17,8 @@ class App extends React.Component {
             },
             {
                 field: 'age',
-                label: 'Age'
+                label: 'Age',
+                skipRender: true
             }]
         };
     }
@@ -39,6 +40,7 @@ class App extends React.Component {
                     FluidApi.execute('addPeople');
                 }}>Sub</button>
             </FluidForm>
+            <FluidTable onSelect={(rowValue)=>{ console.log(rowValue.getPrimaryKey())}}columns={this.specs()} value={[{name:'Jerico', age:2}, {name:'Nica', age:14}]}/>
         </FluidApi>);
     }
 }
