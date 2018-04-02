@@ -57,10 +57,11 @@ export class FluidFormTag extends React.Component {
         this.thisOnChange = this.onChange.bind(this);
         this.thisSubmitForm = this.submitForm.bind(this);
         this.thisLoadForm = this.loadForm.bind(this);
+        this.thisRenderField = this.renderField.bind(this);
         const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
         const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
         props.actions.resetForm(props.name, initalState);
-        this.thisSpecs = props.specs({ dispatch: props.dispatch, formName: props.name });
+        this.thisSpecs = props.specs({ state: this.props.fluidForm[props.name], formName: props.name });
         this.thisSpecs.forEach(spec => {
             if (spec.public) {
                 FluidFunc.create(`${FORM_SET_FIELD}${props.name}`)
@@ -104,7 +105,9 @@ export class FluidFormTag extends React.Component {
             })
             .spec('field', { require: true });
     }
-
+    componentDidUpdate() {
+        this.thisSpecs = this.props.specs({ state: this.props.fluidForm[this.props.name], formName: this.props.name });
+    }
     submitForm(event) {
         if (event) {
             event.preventDefault();
@@ -121,22 +124,30 @@ export class FluidFormTag extends React.Component {
     loadForm(parameter) {
         this.props.actions.loadForm(this.props.name, new FormValue(this.thisSpecs, parameter).getRawValue());
     }
-
+    renderField(spec) {
+        let isRender = !spec.skipRender;
+        if (isRender) {
+            isRender = spec.isVisible ? spec.isVisible instanceof Function && spec.isVisible(this.props.fluidForm[this.props.name]) : true;
+        }
+        return isRender;
+    }
     render() {
         return (<form
             onChange={this.thisOnChange}
             onSubmit={this.thisSubmitForm} name={this.props.name}>
-            {this.thisSpecs && this.props.fieldNode && this.thisSpecs.filter(spec => !spec.skipRender).map((field, index) => this.props.fieldNode(createField(field), index))}
+            {this.thisSpecs && this.props.fieldNode && this.thisSpecs.filter(spec => this.thisRenderField(spec)).map((field, index) =>
+                this.props.fieldNode(createField(field, this.props.fluidForm[this.props.name]), index))}
             {this.props.children}
         </form>);
     }
 }
 
-function createField(field) {
+function createField(field, fluidForm = { data: {} }) {
     return {
         name: field.field,
         label: field.label,
-        require: field.data ? field.data.require : false
+        require: field.data ? field.data.require : false,
+        isDisabled: field.isDisabled && field.isDisabled(fluidForm)
     };
 }
 

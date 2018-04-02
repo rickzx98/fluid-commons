@@ -8,12 +8,38 @@ import { connect } from 'react-redux';
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.specs = () => {
+        this.specs = ({ state }) => {
+            this.form = state;
             return [{
                 field: 'name',
                 primaryKey: true,
                 label: 'Library Name',
+                isDisabled: (state) => {
+                    return state.data && state.data['confirmName'] === 'hi';
+                },
                 data: { require: true }
+            },
+            {
+                field: 'confirmName',
+                primaryKey: true,
+                label: 'Confirm Name',
+                isVisible: (state) => {
+                    return state && state.data['name'] === 'hello';
+                },
+                data: {
+                    validate: (value) => new Promise((resolve, reject) => {
+                        console.log('validate', this.form);
+                        if (this.form) {
+                            if (value === this.form.data['name']) {
+                                resolve()
+                            } else {
+                                reject(new Error('name did not match.'));
+                            }
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
             },
             {
                 field: 'age',
@@ -29,18 +55,17 @@ class App extends React.Component {
 
     render() {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
-            <FluidForm onSubmit={(value) => { console.log('value', value); }} onFailed={() => { }} name="sampleForm" fieldNode={(field) => {
-                return <input key={field.name}
-                    name={field.name}
-                    placeholder={field.label}
-                    value={FluidForm.getValue(this.props.sampleForm, field.name)}
-                />;
-            }} specs={this.specs}>
-                <button type="submit" onClick={() => {
-                    FluidApi.execute('addPeople');
-                }}>Sub</button>
+            <FluidForm onSubmit={(value) => { console.log('value', value); }}
+                onFailed={(error) => { console.error(error); }} name="sampleForm" fieldNode={(field) => {
+                    return <input key={field.name}
+                        disabled={field.isDisabled}
+                        name={field.name}
+                        placeholder={field.label}
+                        value={FluidForm.getValue(this.props.sampleForm, field.name)}
+                    />;
+                }} specs={this.specs}>
+                <button type="submit">Sub</button>
             </FluidForm>
-            <FluidTable onSelect={(rowValue)=>{ console.log(rowValue.getPrimaryKey())}}columns={this.specs()} value={[{name:'Jerico', age:2}, {name:'Nica', age:14}]}/>
         </FluidApi>);
     }
 }
