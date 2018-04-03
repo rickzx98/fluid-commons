@@ -1,4 +1,4 @@
-import { FluidApi, FluidForm, FluidTable } from '../lib/';
+import { FluidApi, FluidForm } from '../lib/';
 
 import ApiInterface from './ApiInterface';
 import Config from './ApiConfig';
@@ -17,23 +17,28 @@ class App extends React.Component {
                 isDisabled: (state) => {
                     return state.data && state.data['confirmName'] === 'hi';
                 },
-                data: { require: true }
+                data: {
+                    require: true, default: 'FU',
+                    validate: (value) => new Promise((resolve, reject) => {
+                        if (value === 'FU') {
+                            reject(new Error('Come on!'));
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
             },
             {
                 field: 'confirmName',
                 primaryKey: true,
                 label: 'Confirm Name',
-                isVisible: (state) => {
-                    return state && state.data['name'] === 'hello';
-                },
                 data: {
                     validate: (value) => new Promise((resolve, reject) => {
-                        console.log('validate', this.form);
                         if (this.form) {
                             if (value === this.form.data['name']) {
                                 resolve()
                             } else {
-                                reject(new Error('name did not match.'));
+                                reject('name did not match.');
                             }
                         } else {
                             resolve();
@@ -48,17 +53,14 @@ class App extends React.Component {
             }]
         };
     }
-
-    componentWillMount() {
-        FluidForm.load('sampleForm', { name: 'Jerico Pogi', age: 32 });
-    }
-
     render() {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
             <FluidForm onSubmit={(value) => { console.log('value', value); }}
-                onFailed={(error) => { console.error(error); }} name="sampleForm" fieldNode={(field) => {
-
-                    return <input required={field.require} key={field.name}
+                onFailed={(error) => { console.error(error); }} name="sampleForm"
+                fieldNode={(field) => {
+                    return <input style={{
+                        borderColor: `${field.isInvalid ? 'red' : ''}`
+                    }} required={field.require} key={field.name}
                         disabled={field.isDisabled}
                         name={field.name}
                         placeholder={field.label}

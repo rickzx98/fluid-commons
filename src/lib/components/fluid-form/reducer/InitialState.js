@@ -2,7 +2,6 @@ export default {
     touch: false,
     managed: false,
     invalid: false,
-    field: undefined,
-    message: undefined,
+    errorFields: undefined,
     form: undefined
 };

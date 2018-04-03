@@ -60,7 +60,7 @@ export class FluidFormTag extends React.Component {
         this.thisRenderField = this.renderField.bind(this);
         const SubmitChain = FluidFunc.create(`${FORM_SUBMIT}${props.name}`);
         const LoadChain = FluidFunc.create(`${FORM_LOAD_DATA}${props.name}`);
-        props.actions.resetForm(props.name, initalState);
+        let defaults = {};
         this.thisSpecs = props.specs({ state: this.props.fluidForm[props.name], formName: props.name });
         this.thisSpecs.forEach(spec => {
             if (spec.public) {
@@ -71,9 +71,13 @@ export class FluidFormTag extends React.Component {
                     })
                     .spec('field', { require: true });
             }
+            if (spec.data && spec.data.default) {
+                defaults[spec.field] = spec.data.default;
+            }
             LoadChain.spec(spec.field, spec.data);
             SubmitChain.spec(spec.field, spec.data);
         });
+        props.actions.resetForm(props.name, initalState, defaults);
         SubmitChain
             .onStart(parameter => {
                 props.onSubmit(new FormValue(this.thisSpecs, parameter));
@@ -83,8 +87,14 @@ export class FluidFormTag extends React.Component {
             .onStart(parameter => {
                 this.thisLoadForm(parameter);
             })
-            .onFail((error, retry, reject) => {
-                this.props.onFailed({ error });
+            .onFail((stack, retry, reject) => {
+                if (stack.error && stack.error instanceof Array) {
+                    const errorFields = stack.error.map(err => ({ field: err.field, message: err.error && (err.error.message || err.error) }));
+                    this.props.actions.invalidForm(props.name, errorFields)
+                }
+                if (this.props.onFailed) {
+                    this.props.onFailed({ stack });
+                }
                 reject();
             });
         FluidFunc.create(`${FORM_ON_SUBMIT}${props.name}`)
@@ -114,7 +124,15 @@ export class FluidFormTag extends React.Component {
         }
         const form = this.props.fluidForm[this.props.name];
         FluidFunc.start(`${FORM_SUBMIT}${this.props.name}`, form ? form.data : {})
-            .catch(this.props.onFailed);
+            .catch(stack => {
+                if (stack.error && stack.error instanceof Array) {
+                    const errorFields = stack.error.map(err => ({ field: err.field, message: err.error && (err.error.message || err.error) }));
+                    this.props.actions.invalidForm(this.props.name, errorFields)
+                }
+                if (this.props.onFailed) {
+                    this.props.onFailed({ stack });
+                }
+            });
     }
 
     onChange(event) {
@@ -143,11 +161,22 @@ export class FluidFormTag extends React.Component {
 }
 
 function createField(field, fluidForm = { data: {} }) {
+    let isInvalid;
+    let invalidMessage;
+    if (fluidForm.invalid && fluidForm.errorFields) {
+        const invalidField = fluidForm.errorFields.filter(err => err.field === field.field)[0];
+        if (invalidField) {
+            isInvalid = true;
+            invalidMessage = invalidField.message;
+        }
+    }
     return {
         name: field.field,
         label: field.label,
         require: field.data && field.require ? (field.require instanceof Function ? field.require(fluidForm) : field.require) : false,
-        isDisabled: field.isDisabled && field.isDisabled(fluidForm)
+        isDisabled: field.isDisabled && field.isDisabled(fluidForm),
+        isInvalid,
+        invalidMessage
     };
 }
 

@@ -8,10 +8,10 @@ export const submitForm = (form) => {
     }
   };
 };
-export const resetForm = (form, payload) => {
+export const resetForm = (form, payload, defaults) => {
   return {
     type: types.FORM_RESET,
-    payload: { ...payload, form }
+    payload: { ...payload, form, defaults }
   };
 };
 
@@ -26,13 +26,12 @@ export const setFormValue = (form, field, value) => {
   };
 };
 
-export const invalidForm = (form, field, message) => {
+export const invalidForm = (form, errorFields) => {
   return {
     type: types.FORM_INVALID,
     payload: {
       form,
-      field,
-      message
+      errorFields
     }
   };
 };

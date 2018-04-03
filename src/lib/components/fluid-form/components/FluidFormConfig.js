@@ -12,7 +12,7 @@ export const types = {
   fieldNode: PropTypes.func,
   specs: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  onFailed: PropTypes.func.isRequired,
+  onFailed: PropTypes.func,
   fluidForm: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired
 };
