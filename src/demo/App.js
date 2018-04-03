@@ -57,7 +57,8 @@ class App extends React.Component {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
             <FluidForm onSubmit={(value) => { console.log('value', value); }}
                 onFailed={(error) => { console.error(error); }} name="sampleForm" fieldNode={(field) => {
-                    return <input key={field.name}
+
+                    return <input required={field.require} key={field.name}
                         disabled={field.isDisabled}
                         name={field.name}
                         placeholder={field.label}
