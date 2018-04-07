@@ -10,10 +10,10 @@ export const TableRow = ({ columns, value, index, columnClass, rowClass, tableNa
   return (<tr onClick={() => { if (onSelect) { onSelect(new RowValue(columns, value)); } }} className={className}>{columns && columns.filter(column => !column.skipRender).map(col => {
     return (editable && index === editableIndex && col.field === column) || value.isNew ?
       <TableEditableColumn tableName={tableName}
-        columnClass={columnClass} key={col.field}
+        columnClass={columnClass} key={col.field + index}
         value={value} column={col} />
       : (<TableColumn index={index} tableName={tableName}
-        columnClass={columnClass} key={col.field}
+        columnClass={columnClass} key={col.field + index}
         value={value} column={col} />);
   }
   )}</tr>);
