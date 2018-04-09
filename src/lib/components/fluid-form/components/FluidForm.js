@@ -71,7 +71,7 @@ export class FluidFormTag extends React.Component {
                     })
                     .spec('field', { require: true });
             }
-            if (spec.data && spec.data.default) {
+            if (spec.data && spec.data.default !== undefined) {
                 defaults[spec.field] = spec.data.default;
             }
             LoadChain.spec(spec.field, spec.data);

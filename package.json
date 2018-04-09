@@ -1,6 +1,6 @@
 {
   "name": "fluid-commons",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "Commonly used react components with Fluid-Func support.",
   "main": "build/index.js",
   "scripts": {
