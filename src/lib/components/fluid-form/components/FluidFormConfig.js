@@ -10,6 +10,7 @@ export const types = {
     PropTypes.array
   ]),
   fieldNode: PropTypes.func,
+  fieldNodeGroup: PropTypes.func,
   specs: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onFailed: PropTypes.func,

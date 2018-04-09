@@ -29,6 +29,7 @@ class App extends React.Component {
                 }
             },
             {
+                group: 'page 1',
                 field: 'confirmName',
                 primaryKey: true,
                 label: 'Confirm Name',
@@ -47,6 +48,7 @@ class App extends React.Component {
                 }
             },
             {
+                group: 'page 2',
                 field: 'age',
                 label: 'Age',
                 skipRender: true
@@ -57,15 +59,8 @@ class App extends React.Component {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
             <FluidForm onSubmit={(value) => { console.log('value', value); }}
                 onFailed={(error) => { console.error(error); }} name="sampleForm"
-                fieldNode={(field) => {
-                    return <input style={{
-                        borderColor: `${field.isInvalid ? 'red' : ''}`
-                    }} required={field.require} key={field.name}
-                        disabled={field.isDisabled}
-                        name={field.name}
-                        placeholder={field.label}
-                        value={FluidForm.getValue(this.props.sampleForm, field.name)}
-                    />;
+                fieldNodeGroup={(groups) => {
+                    console.log('groups', groups);
                 }} specs={this.specs}>
                 <button type="submit">Sub</button>
             </FluidForm>

@@ -149,12 +149,22 @@ export class FluidFormTag extends React.Component {
         }
         return isRender;
     }
+    renderByGroup(specs) {
+        const groups = {};
+        specs.forEach((spec, index) => {
+            if (!groups[spec.group]) {
+                groups[spec.group] = [];
+            }
+            groups[spec.group].push(createField(spec, this.props.fluidForm[this.props.name]), index);
+        });
+        return this.props.fieldNodeGroup(groups);
+    }
     render() {
-        return (<form
-            onChange={this.thisOnChange}
+        return (<form onChange={this.thisOnChange}
             onSubmit={this.thisSubmitForm} name={this.props.name}>
             {this.thisSpecs && this.props.fieldNode && this.thisSpecs.filter(spec => this.thisRenderField(spec)).map((field, index) =>
                 this.props.fieldNode(createField(field, this.props.fluidForm[this.props.name]), index))}
+            {this.thisSpecs && this.props.fieldNodeGroup && this.renderByGroup(this.thisSpecs.filter(spec => this.thisRenderField(spec)))}
             {this.props.children}
         </form>);
     }
