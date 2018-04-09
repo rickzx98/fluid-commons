@@ -176,7 +176,8 @@ function createField(field, fluidForm = { data: {} }) {
         require: field.data && field.data.require ? (field.data.require instanceof Function ? field.data.require() : field.data.require) : false,
         isDisabled: field.isDisabled && field.isDisabled(fluidForm),
         isInvalid,
-        invalidMessage
+        invalidMessage,
+        group: field.group,
     };
 }
 
