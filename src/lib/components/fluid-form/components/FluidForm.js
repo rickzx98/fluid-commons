@@ -155,7 +155,7 @@ export class FluidFormTag extends React.Component {
             if (!groups[spec.group]) {
                 groups[spec.group] = [];
             }
-            groups[spec.group].push(createField(spec, this.props.fluidForm[this.props.name]), index);
+            groups[spec.group].push(createField(spec, this.props.fluidForm[this.props.name]));
         });
         return this.props.fieldNodeGroup(groups);
     }
