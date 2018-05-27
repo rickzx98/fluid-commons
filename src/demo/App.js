@@ -54,6 +54,30 @@ class App extends React.Component {
                 skipRender: true
             }]
         };
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_1", params);
+        });
+
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_2", params);
+        });
+
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_3", params);
+        });
+
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_4", params);
+        });
+
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_5", params);
+        });
+
+        FluidApi.subscribe("target", (params) => {
+            console.log("param_6", params);
+        });
+
     }
     render() {
         return (<FluidApi environment="dev" api={ApiInterface} config={Config}>
@@ -62,7 +86,11 @@ class App extends React.Component {
                 fieldNodeGroup={(groups) => {
                     console.log('groups', groups);
                 }} specs={this.specs}>
-                <button type="submit">Sub</button>
+                <button type="button" onClick={() => {
+                    FluidApi.notify("target", {
+                        hello: "will take place"
+                    });
+                }}>Notify</button>
             </FluidForm>
         </FluidApi>);
     }

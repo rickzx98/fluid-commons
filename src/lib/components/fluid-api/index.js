@@ -5,6 +5,25 @@ import React from 'react';
 const FluidName = '_$$FluidFunc_$$FluidApi_';
 const StorageName = '_$$ss_';
 const EFluidApi = `${FluidName}_e$`;
+const subscribers = {};
+function notifySubscriber(param, callback) {
+  return new Promise((resolve, reject) => {
+    try {
+      const action = callback(param);
+      if (action instanceof Promise) {
+        action.then(() => {
+          resolve();
+        }).catch(error => {
+          reject(error);
+        });
+      } else {
+        resolve();
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
 export class FluidApi extends React.Component {
   static storage(context, action) {
     return FluidFunc.start(`${FluidName}${StorageName}`, {
@@ -12,9 +31,42 @@ export class FluidApi extends React.Component {
       action
     });
   }
+
   static execute(api, param) {
     return FluidFunc.start(FluidName, { api, param });
   }
+
+  static subscribe(target, callback) {
+    if (subscribers[target]) {
+      const targetSubcribers = subscribers[target];
+      FluidFunc.create(`_target_${target}_${targetSubcribers.length}`)
+        .onStart(param => {
+          return notifySubscriber(param, callback);
+        })
+        .strict()
+        .spec("target", { require: true })
+        .spec("message", { require: true });
+      targetSubcribers.push(`_target_${target}_${targetSubcribers.length}`);
+    } else {
+      subscribers[target] = [`_target_${target}_0`];
+      FluidFunc.create(`_target_${target}_0`).onStart(param => {
+        return notifySubscriber(param, callback);
+      })
+        .strict()
+        .spec("target", { require: true })
+        .spec("message", { require: true });
+    }
+  }
+
+  static notify(target, message) {
+    if (subscribers[target]) {
+      return FluidFunc.start(subscribers[target], {
+        target,
+        message
+      });
+    }
+  }
+
   constructor(props) {
     super(props);
     this.state = { loading: false };
