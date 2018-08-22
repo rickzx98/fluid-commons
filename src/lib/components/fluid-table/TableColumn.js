@@ -9,7 +9,8 @@ export const TableColumn = ({ column, value, columnClass, tableName, index }) =>
   let realValue = column.transform ? column.transform(value[column.field]) : value[column.field];
   const className = `${column.className || ''} ${columnClass || ''}`;
   if (column.component) {
-    colElem = <td style={column.style} className={className}>{colElem.component({ realValue, column })}</td>;
+    const CustomColumn = column.component;
+    colElem = <td style={column.style} className={className}><CustomColumn value={realValue} column={column} /></td>;
   } else {
     colElem = (<td onDoubleClick={() => {
       if (column.editable) {
